@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int              @id @default(autoincrement())
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  email            String           @unique
+  password         String
+  role             Role             @default(USER)
+  refresh_sessions RefreshSession[]
+  chats            Chat[]
+
+  @@map("users")
+}
+
+model RefreshSession {
+  id            Int    @id @default(autoincrement())
+  userId        Int
+  refresh_token String
+  fingerprint   String
+  user          User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_sessions")
+}
+
+model Chat {
+  id          String    @id @default(uuid())
+  name        String
+  avatar      String
+  lastMessage String
+  timestamp   DateTime  @default(now())
+  userId      Int       // Добавляем поле для связи с пользователем
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages    Message[]
+
+  @@map("chats")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  sender    String
+  timestamp DateTime @default(now())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+
+  @@map("messages")
+}
+
+enum Role {
+  ADMIN
+  MODER
+  USER
+}

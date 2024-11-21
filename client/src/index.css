@@ -1,0 +1,91 @@
+/* === Reset styles === */
+
+/* Убираем отступы и padding по умолчанию */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Устанавливаем box-sizing для правильной работы с размерами */
+}
+
+/* Убираем стандартные стили списков */
+ol, ul {
+    list-style: none;
+}
+
+/* Убираем подчеркивание у ссылок */
+a {
+    text-decoration: none;
+    color: inherit; /* Цвет ссылки наследуется от родителя */
+}
+
+/* Убираем стандартные стили для изображений */
+img {
+    max-width: 100%;
+    display: block; /* Убираем нижний отступ у изображений */
+    height: auto;
+}
+
+/* Убираем стили для полей форм */
+button, input, textarea, select {
+    font: inherit; /* Унаследовать шрифт от родителя */
+    background: none;
+    border: none;
+    outline: none; /* Убираем обводку */
+}
+
+/* Убираем стили для таблиц */
+table {
+    border-collapse: collapse; /* Убираем двойные границы в таблицах */
+    border-spacing: 0;
+}
+
+/* === Normalize styles === */
+
+/* Устанавливаем базовый стиль для body */
+html {
+    font-size: 16px; /* Устанавливаем базовый размер шрифта */
+    -webkit-font-smoothing: antialiased; /* Улучшает рендеринг шрифтов в веб-ките */
+    -moz-osx-font-smoothing: grayscale; /* Улучшает рендеринг шрифтов в macOS */
+}
+
+body {
+    line-height: 1.5; /* Оптимальный межстрочный интервал */
+    font-family: Arial, Helvetica, sans-serif; /* Задайте ваш шрифт по умолчанию */
+    color: #333; /* Цвет текста */
+    background-color: #fff; /* Цвет фона */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit; /* Убираем лишнюю жирность заголовков */
+}
+
+/* === Дополнительно === */
+
+/* Устанавливаем курсор указателем для кнопок */
+button {
+    cursor: pointer;
+}
+
+/* Убираем анимацию при нажатии на ссылки и кнопки в мобильных устройствах */
+a,
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Убираем выделение текста при двойном клике */
+body,
+button,
+input,
+textarea {
+    user-select: none;
+}
+
+/* Выравнивание корневого контейнера */
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
