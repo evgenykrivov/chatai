@@ -15,7 +15,7 @@ export const chatApi = createApi({
       return headers
     },
   }),
-  tagTypes: ["Chat", "Message"], // Добавляем теги
+  tagTypes: ["Chat", "Message"],
   endpoints: (builder) => ({
     getChats: builder.query({
       query: () => ({
@@ -49,7 +49,7 @@ export const chatApi = createApi({
         body: chatData,
         credentials: "include",
       }),
-      invalidatesTags: [{ type: "Chat", id: "LIST" }], // Обновляем список чатов
+      invalidatesTags: [{ type: "Chat", id: "LIST" }],
     }),
     addMessage: builder.mutation({
       query: ({ chatId, message }) => ({
@@ -59,7 +59,7 @@ export const chatApi = createApi({
         credentials: "include",
       }),
       invalidatesTags: (result, error, { chatId }) => [
-        { type: "Chat", id: chatId }, // Обновляем сообщения для конкретного чата
+        { type: "Chat", id: chatId },
       ],
     }),
 
@@ -69,7 +69,7 @@ export const chatApi = createApi({
         method: "DELETE",
         credentials: "include",
       }),
-      invalidatesTags: [{ type: "Chat", id: "LIST" }], // Обновляем список чатов
+      invalidatesTags: [{ type: "Chat", id: "LIST" }],
     }),
   }),
 })

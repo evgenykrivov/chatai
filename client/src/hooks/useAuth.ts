@@ -22,11 +22,11 @@ export const useAuth = () => {
   }) => {
     try {
       const data = await login(credentials).unwrap()
-      navigate(ERoute.ChatListPage) // Редирект после успешного логина
+      navigate(ERoute.ChatListPage)
       return data
     } catch (error) {
       console.error("Login failed", error)
-      throw error // Пробрасываем ошибку для отображения
+      throw error
     }
   }
 

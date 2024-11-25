@@ -2,12 +2,11 @@ import { Outlet, useNavigate } from "react-router-dom"
 import { useAuth } from "@/hooks"
 import { useRefreshMutation } from "@/entities/user/api/userApi"
 import { useEffect, useState } from "react"
-import { ERoute } from "@/routes/constants"
 import { LayoutWrapper } from "@/layouts/components/LayoutWrapper/LayoutWrapper"
 
 const MainLayout = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true) // Состояние загрузки
-  const { isAuthenticated } = useAuth() // Проверка авторизации
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const [refresh] = useRefreshMutation()
 
@@ -15,7 +14,7 @@ const MainLayout = () => {
     const handleRefresh = async () => {
       try {
         if (!isAuthenticated) {
-          const res = await refresh().unwrap() // Пытаемся обновить токен
+          const res = await refresh().unwrap()
           if (res?.access_token) {
             console.log("Refresh successful")
           } else {
@@ -25,16 +24,13 @@ const MainLayout = () => {
       } catch (err) {
         console.error("Failed to refresh token", err)
       } finally {
-        setIsLoading(false) // Устанавливаем состояние загрузки
+        setIsLoading(false)
       }
     }
 
-    handleRefresh() // Выполняем проверку авторизации
-
-    // Зависимости `useEffect`
+    handleRefresh()
   }, [isAuthenticated, refresh, navigate])
 
-  // Показ индикатора загрузки до завершения проверки
   if (isLoading) {
     return <div>Loading...</div>
   }

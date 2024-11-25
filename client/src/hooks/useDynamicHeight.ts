@@ -6,9 +6,9 @@ export const useDynamicHeight = () => {
 
   const updateHeight = useCallback(() => {
     if (elementRef.current) {
-      elementRef.current.style.height = "auto" // Сбрасываем высоту
-      setHeight(elementRef.current.scrollHeight) // Сохраняем высоту
-      elementRef.current.style.height = `${elementRef.current.scrollHeight}px` // Устанавливаем новую высоту
+      elementRef.current.style.height = "auto"
+      setHeight(elementRef.current.scrollHeight)
+      elementRef.current.style.height = `${elementRef.current.scrollHeight}px`
     }
   }, [])
 

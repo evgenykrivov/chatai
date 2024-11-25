@@ -103,19 +103,19 @@ To simplify the setup process, we've streamlined the steps into a unified startu
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/username/chat-ai.git
-   cd chat-ai
+   git clone https://github.com/username/chatai.git
+   cd chatai
    ```
 
 2. Apply database migrations using Prisma:
    ```bash
-   cd backend
+   cd server
    npx prisma migrate deploy
    ```
 
 3. Run the entire application stack with Docker:
    ```bash
-   docker-compose up -d
+   docker-compose.yml up -d
    ```
 
 ---
@@ -157,7 +157,7 @@ If Docker is unavailable, follow these steps:
 
 5. Start the backend server:
    ```bash
-   cd backend
+   cd server
    
    # development
    $ npm run start

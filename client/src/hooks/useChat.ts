@@ -83,7 +83,6 @@ export const useChat = () => {
         })
       })
 
-      // Сохранение ответа бота в базу данных
       const savedBotMessage = await addMessage({
         chatId: id,
         message: { content: botMessageContent, sender: "bot" },
@@ -101,7 +100,6 @@ export const useChat = () => {
     } catch (err) {
       console.error("Failed to send message or save bot reply:", err)
 
-      // Обработка ошибки: добавляем временное сообщение с отметкой об ошибке
       setMessages((prev) => [
         ...prev,
         {
@@ -109,7 +107,7 @@ export const useChat = () => {
           content: "An error occurred while generating a response.",
           sender: "bot",
           isTemporary: true,
-          isError: true, // Дополнительное свойство для отображения ошибки
+          isError: true,
         },
       ])
 
@@ -183,7 +181,7 @@ export const useChat = () => {
       }
     } catch (err) {
       console.error("Failed to fetch bot reply:", err)
-      throw err // Выброс ошибки для обработки в handleSendMessage
+      throw err
     }
     return fullResponse
   }

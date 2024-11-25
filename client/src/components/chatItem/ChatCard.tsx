@@ -7,7 +7,7 @@ type ChatCardProps = {
   avatar: string
   name: string
   lastMessage: string
-  timestamp: string // Уже форматированное время
+  timestamp: string
   onClick: () => void
   onDelete: (event: React.MouseEvent<HTMLButtonElement>, id: string) => void
 }

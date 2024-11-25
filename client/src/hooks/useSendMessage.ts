@@ -20,30 +20,26 @@ export const sendMessage = async (
 ) => {
   if (!input.trim() || !chatId) return
 
-  const tempId = Date.now().toString() // Уникальный временный ID
+  const tempId = Date.now().toString()
   const userMessage: Message = {
     id: tempId,
     content: input,
     sender: "user",
-    isTemporary: true, // Метка временного сообщения
+    isTemporary: true,
   }
 
-  // Добавляем временное сообщение
   setMessages((prev) => [...prev, userMessage])
 
   try {
-    // Сохраняем сообщение пользователя
     const savedMessage = await addMessage({
       chatId,
       message: { content: input, sender: "user" },
     })
 
-    // Заменяем временное сообщение на сохранённое
     setMessages((prev) =>
       prev.map((msg) => (msg.id === tempId ? savedMessage : msg)),
     )
 
-    // Получаем ответ бота
     const botReply = await fetchBotReplyAPI(input)
     if (botReply) {
       const botMessage: Message = {
@@ -61,7 +57,6 @@ export const sendMessage = async (
     }
   } catch (err) {
     console.error("Failed to send message:", err)
-    // Если ошибка, помечаем сообщение как ошибочное
     setMessages((prev) =>
       prev.map((msg) => (msg.id === tempId ? { ...msg, isError: true } : msg)),
     )

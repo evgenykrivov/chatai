@@ -6,7 +6,7 @@ type MessageInputProps = {
   input: string
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
   onSend: () => void
-  setHeight?: (height: number) => void // Новый пропс для передачи высоты
+  setHeight?: (height: number) => void
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({
@@ -24,12 +24,12 @@ const MessageInput: React.FC<MessageInputProps> = ({
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
     }
     if (containerRef.current && setHeight) {
-      setHeight(containerRef.current.offsetHeight) // Передача высоты в родительский компонент
+      setHeight(containerRef.current.offsetHeight)
     }
   }
 
   useEffect(() => {
-    adjustHeight() // Устанавливаем начальную высоту при монтировании
+    adjustHeight()
   }, [input])
 
   return (

@@ -9,8 +9,8 @@ import * as process from 'process';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['http://localhost:5173'], // Разрешаем ваш фронтенд
-    credentials: true, // Разрешаем отправку cookies/авторизационных данных
+    origin: ['http://localhost:5173'],
+    credentials: true,
   });
 
   app.useGlobalPipes(
@@ -18,10 +18,8 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  // const reflector = new Reflector();
-  // app.useGlobalGuards(new AtGuard(reflector)); // or do it in providers
+
   app.use(cookieParser());
-  // app.setGlobalPrefix('v1');
   app.enableVersioning({
     prefix: 'api/',
     defaultVersion: 'v1',

@@ -9,7 +9,6 @@ export const useChatList = () => {
   const { data: chats = [], isLoading, error } = useGetChatsQuery(undefined)
   const [deleteChat] = useDeleteChatMutation()
 
-  // Обрабатываем чаты, добавляя `lastMessage` и `timestamp`
   const processedChats = chats.map((chat: Chat) => {
     const lastMessage =
       chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null

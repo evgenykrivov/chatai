@@ -18,7 +18,7 @@ const ChatPage: React.FC = () => {
   } = useChat()
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
-  const [inputHeight, setInputHeight] = useState(0) // Состояние для высоты инпута
+  const [inputHeight, setInputHeight] = useState(0)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -35,7 +35,7 @@ const ChatPage: React.FC = () => {
     <div className={styles.container}>
       <div
         className={styles.messages}
-        style={{ marginBottom: `${inputHeight}px` }} // Динамический нижний отступ
+        style={{ marginBottom: `${inputHeight}px` }}
       >
         {messages.map((message: MessageTypesApi) => (
           <Message
@@ -55,7 +55,7 @@ const ChatPage: React.FC = () => {
         input={input}
         onChange={handleInputChange}
         onSend={handleSendMessage}
-        setHeight={setInputHeight} // Передаём функцию обновления высоты
+        setHeight={setInputHeight}
       />
     </div>
   )

@@ -86,7 +86,6 @@ export class AuthController {
     @GetCookieValue(RT_STRATEGY_KEY) refreshToken: string,
     @Fingerprint() fp: IFingerprint,
     @Res({ passthrough: true }) response: Response,
-    // @GetCurrentUser('userId') userId: number,
   ): Promise<TAccessToken> {
     const { access_token, refresh_token } =
       await this.authService.refreshTokens(refreshToken, fp);

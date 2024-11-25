@@ -14,7 +14,7 @@ const RegisterPage: React.FC = () => {
     password?: string
     confirmPassword?: string
   }>({})
-  const [hasSubmitted, setHasSubmitted] = useState(false) // Флаг попытки отправки
+  const [hasSubmitted, setHasSubmitted] = useState(false)
   const [register, registerState] = useRegisterMutation()
 
   const validate = () => {
@@ -42,13 +42,12 @@ const RegisterPage: React.FC = () => {
   const handleInputChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData((prev) => ({ ...prev, [field]: e.target.value }))
-      // Убираем ошибки при вводе
       setErrors((prev) => ({ ...prev, [field]: undefined }))
     }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setHasSubmitted(true) // Устанавливаем флаг попытки отправки
+    setHasSubmitted(true)
     const validationErrors = validate()
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
