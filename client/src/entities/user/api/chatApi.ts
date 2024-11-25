@@ -62,6 +62,15 @@ export const chatApi = createApi({
         { type: "Chat", id: chatId }, // Обновляем сообщения для конкретного чата
       ],
     }),
+
+    deleteChat: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/chats/${id}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+      invalidatesTags: [{ type: "Chat", id: "LIST" }], // Обновляем список чатов
+    }),
   }),
 })
 
@@ -70,4 +79,5 @@ export const {
   useGetChatByIdQuery,
   useCreateChatMutation,
   useAddMessageMutation,
+  useDeleteChatMutation,
 } = chatApi

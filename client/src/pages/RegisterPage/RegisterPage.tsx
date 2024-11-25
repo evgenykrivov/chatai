@@ -1,76 +1,105 @@
 import React, { useState } from "react"
 import AuthForm from "@/components/AuthForm/AuthForm"
-import { ERoute } from "@/routes/constants"
 import { useRegisterMutation } from "@/entities/user/api/userApi"
-import { useNavigate } from "react-router-dom"
 import { ERole } from "@/entities/user/api/typesApi"
 
-const RegisterPage = () => {
-  const [form, setForm] = useState({
+const RegisterPage: React.FC = () => {
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
-    role: ERole.USER,
+    confirmPassword: "",
   })
-  const [errors, setErrors] = useState({ email: "", password: "" })
-  const [register, { isLoading }] = useRegisterMutation()
-  const navigate = useNavigate()
+  const [errors, setErrors] = useState<{
+    email?: string
+    password?: string
+    confirmPassword?: string
+  }>({})
+  const [hasSubmitted, setHasSubmitted] = useState(false) // Флаг попытки отправки
+  const [register, registerState] = useRegisterMutation()
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {}
-    if (!form.email.trim()) newErrors.email = "Email is required"
-    else if (!/\S+@\S+\.\S+/.test(form.email))
-      newErrors.email = "Invalid email format"
-    if (!form.password.trim()) newErrors.password = "Password is required"
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+  const validate = () => {
+    const newErrors: {
+      email?: string
+      password?: string
+      confirmPassword?: string
+    } = {}
+    if (!formData.email) {
+      newErrors.email = "Email is required."
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email must be valid."
+    }
+    if (!formData.password) {
+      newErrors.password = "Password is required."
+    } else if (formData.password.length < 3) {
+      newErrors.password = "Password must be at least 3 characters."
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords must match."
+    }
+    return newErrors
   }
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    setForm({ ...form, [e.target.id]: e.target.value })
-    setErrors((prev) => ({ ...prev, [e.target.id]: "" }))
-  }
+  const handleInputChange =
+    (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }))
+      // Убираем ошибки при вводе
+      setErrors((prev) => ({ ...prev, [field]: undefined }))
+    }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (validateForm()) {
-      try {
-        await register(form).unwrap()
-        navigate(ERoute.ChatListPage)
-      } catch (err) {
-        console.error(err)
-      }
+    setHasSubmitted(true) // Устанавливаем флаг попытки отправки
+    const validationErrors = validate()
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
+      return
+    }
+    try {
+      await register({
+        email: formData.email,
+        password: formData.password,
+        role: ERole.USER,
+      }).unwrap()
+      window.location.href = "/login"
+    } catch (err: any) {
+      setErrors({ email: "Email is already taken." })
     }
   }
 
   return (
     <AuthForm
-      title="Create Your Account"
-      subtitle="Creating a new account"
+      title="Register"
       fields={[
         {
           id: "email",
           type: "email",
           placeholder: "Email",
-          value: form.email,
-          error: errors.email,
-          onChange: handleChange,
+          value: formData.email,
+          onChange: handleInputChange("email"),
+          error: hasSubmitted ? errors.email : undefined,
         },
         {
           id: "password",
           type: "password",
           placeholder: "Password",
-          value: form.password,
-          error: errors.password,
-          onChange: handleChange,
+          value: formData.password,
+          onChange: handleInputChange("password"),
+          error: hasSubmitted ? errors.password : undefined,
+        },
+        {
+          id: "confirmPassword",
+          type: "password",
+          placeholder: "Confirm Password",
+          value: formData.confirmPassword,
+          onChange: handleInputChange("confirmPassword"),
+          error: hasSubmitted ? errors.confirmPassword : undefined,
         },
       ]}
       submitButtonLabel="Register"
       footerText="Already have an account?"
-      footerLink={{ text: "Log in", to: ERoute.LoginPage }}
+      footerLink={{ text: "Login here", to: "/login" }}
       onSubmit={handleSubmit}
-      isLoading={isLoading}
+      isLoading={registerState.isLoading}
     />
   )
 }

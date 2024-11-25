@@ -1,69 +1,78 @@
 import React, { useState } from "react"
 import AuthForm from "@/components/AuthForm/AuthForm"
-import { ERoute } from "@/routes/constants"
-import { useLoginMutation } from "@/entities/user/api/userApi"
-import { useNavigate } from "react-router-dom"
+import { useAuth } from "@/hooks/useAuth"
 
-const LoginPage = () => {
-  const [form, setForm] = useState({ email: "", password: "" })
-  const [errors, setErrors] = useState({ email: "", password: "" })
-  const [login, { isLoading }] = useLoginMutation()
-  const navigate = useNavigate()
+const LoginPage: React.FC = () => {
+  const { login, loginState } = useAuth()
+  const [formData, setFormData] = useState({ email: "", password: "" })
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>(
+    {},
+  )
+  const [hasSubmitted, setHasSubmitted] = useState(false) // Флаг попытки отправки
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {}
-    if (!form.email.trim()) newErrors.email = "Email is required"
-    else if (!/\S+@\S+\.\S+/.test(form.email))
-      newErrors.email = "Invalid email format"
-    if (!form.password.trim()) newErrors.password = "Password is required"
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+  const validate = () => {
+    const newErrors: { email?: string; password?: string } = {}
+    if (!formData.email) {
+      newErrors.email = "Email is required."
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email must be valid."
+    }
+    if (!formData.password) {
+      newErrors.password = "Password is required."
+    } else if (formData.password.length < 3) {
+      newErrors.password = "Password must be at least 3 characters."
+    }
+    return newErrors
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.id]: e.target.value })
-    setErrors((prev) => ({ ...prev, [e.target.id]: "" }))
-  }
+  const handleInputChange =
+    (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({ ...prev, [field]: e.target.value }))
+      // Убираем ошибки при вводе
+      setErrors((prev) => ({ ...prev, [field]: undefined }))
+    }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (validateForm()) {
-      try {
-        await login(form).unwrap()
-        navigate(ERoute.ChatListPage)
-      } catch (err) {
-        console.error(err)
-      }
+    setHasSubmitted(true) // Устанавливаем флаг попытки отправки
+    const validationErrors = validate()
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
+      return
+    }
+    try {
+      await login(formData)
+    } catch (err: any) {
+      setErrors({ email: "Invalid email or password." })
     }
   }
 
   return (
     <AuthForm
-      title="Welcome Back"
-      subtitle="Log in to your account"
+      title="Login"
       fields={[
         {
           id: "email",
           type: "email",
           placeholder: "Email",
-          value: form.email,
-          error: errors.email,
-          onChange: handleChange,
+          value: formData.email,
+          onChange: handleInputChange("email"),
+          error: hasSubmitted ? errors.email : undefined, // Ошибка только после попытки отправки
         },
         {
           id: "password",
           type: "password",
           placeholder: "Password",
-          value: form.password,
-          error: errors.password,
-          onChange: handleChange,
+          value: formData.password,
+          onChange: handleInputChange("password"),
+          error: hasSubmitted ? errors.password : undefined, // Ошибка только после попытки отправки
         },
       ]}
       submitButtonLabel="Login"
       footerText="Don't have an account?"
-      footerLink={{ text: "Register", to: ERoute.RegisterPage }}
+      footerLink={{ text: "Register here", to: "/register" }}
       onSubmit={handleSubmit}
-      isLoading={isLoading}
+      isLoading={loginState.isLoading}
     />
   )
 }

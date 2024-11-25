@@ -1,16 +1,24 @@
 import React from "react"
 import InputField from "@/components/InputField/InputField"
 import styles from "./AuthForm.module.scss"
-import { Link } from "react-router-dom"
 
-type Field = {
-  id: string
-  type: string
-  placeholder: string
-  value: string
-  error?: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
+type Field =
+  | {
+      id: string
+      type: "text" | "password" | "email"
+      placeholder: string
+      value: string
+      error?: string
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    }
+  | {
+      id: string
+      type: "select"
+      value: string
+      error?: string
+      onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+      options: { value: string; label: string }[]
+    }
 
 type AuthFormProps = {
   title: string
@@ -21,6 +29,7 @@ type AuthFormProps = {
   footerLink: { text: string; to: string }
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
   isLoading?: boolean
+  errorMessage?: string
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({
@@ -32,6 +41,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
   footerLink,
   onSubmit,
   isLoading,
+  errorMessage,
 }) => {
   return (
     <div className={styles.container}>
@@ -42,6 +52,9 @@ const AuthForm: React.FC<AuthFormProps> = ({
           {fields.map((field) => (
             <InputField key={field.id} {...field} />
           ))}
+          {errorMessage && (
+            <p className={styles.errorMessage}>{errorMessage}</p>
+          )}
           <button
             className={styles.submitButton}
             type="submit"
@@ -52,9 +65,9 @@ const AuthForm: React.FC<AuthFormProps> = ({
         </form>
         <p className={styles.footerText}>
           {footerText}{" "}
-          <Link className={styles.footerLink} to={footerLink.to}>
+          <a className={styles.footerLink} href={footerLink.to}>
             {footerLink.text}
-          </Link>
+          </a>
         </p>
       </div>
     </div>

@@ -7,12 +7,12 @@ import { LayoutWrapper } from "@/layouts/components/LayoutWrapper/LayoutWrapper"
 import { Header } from "@/components/Header/Header"
 
 const PrivateLayout = () => {
-  const isAuth = useAuth()
+  const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const [refresh] = useRefreshMutation()
 
   useEffect(() => {
-    if (!isAuth) {
+    if (!isAuthenticated) {
       refresh()
         .then((res) => {
           if (res.hasOwnProperty("error")) {
@@ -21,12 +21,12 @@ const PrivateLayout = () => {
         })
         .catch(() => navigate(ERoute.LoginPage))
     }
-  }, [isAuth, refresh, navigate])
+  }, [isAuthenticated, refresh, navigate])
 
   return (
     <LayoutWrapper>
       <Header />
-      {isAuth ? <Outlet /> : <div>Loading...</div>}
+      {isAuthenticated ? <Outlet /> : <div>Loading...</div>}
     </LayoutWrapper>
   )
 }

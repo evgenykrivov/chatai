@@ -36,7 +36,7 @@ model Chat {
   avatar      String
   lastMessage String
   timestamp   DateTime  @default(now())
-  userId      Int       // Добавляем поле для связи с пользователем
+  userId      Int
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages    Message[]
 
@@ -49,7 +49,7 @@ model Message {
   sender    String
   timestamp DateTime @default(now())
   chatId    String
-  chat      Chat     @relation(fields: [chatId], references: [id])
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
   @@map("messages")
 }

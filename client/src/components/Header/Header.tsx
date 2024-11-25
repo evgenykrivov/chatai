@@ -1,65 +1,38 @@
-import { Link, useNavigate } from "react-router-dom"
-import { ERoute } from "@/routes/constants"
-import { useLogoutMutation, userApi } from "@/entities/user/api/userApi"
-import { chatApi, useCreateChatMutation } from "@/entities/user/api/chatApi"
-import { useAppDispatch } from "@/app/hooks"
+import { Link, useLocation } from "react-router-dom"
 import styles from "./Header.module.scss"
 import ChatCreationPopup from "@/components/ChatCreationPopup/ChatCreationPopup"
+import { LogOut, PencilLine, Undo2 } from "lucide-react"
 import React, { useState } from "react"
+import { ERoute } from "@/routes/constants"
+import { useHeader } from "@/hooks/useHeader"
 
 export const Header = () => {
-  const navigate = useNavigate()
-  const dispatch = useAppDispatch()
-  const [logout] = useLogoutMutation()
-
-  const [createChat, { isLoading: isCreating }] = useCreateChatMutation()
-
+  const { handleLogout, handleCreateChat, isCreating } = useHeader()
   const [isPopupOpen, setIsPopupOpen] = useState(false)
-
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap()
-      dispatch(userApi.util.resetApiState())
-      dispatch(chatApi.util.resetApiState())
-      navigate(ERoute.LoginPage)
-    } catch (error) {
-      console.error("Logout failed:", error)
-    }
-  }
-
-  const handleCreateChat = async (name: string, avatar: string) => {
-    try {
-      const newChat = await createChat({
-        name,
-        avatar:
-          avatar ||
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/ChatGPT_logo.svg/1024px-ChatGPT_logo.svg.png",
-      }).unwrap()
-      navigate(`${ERoute.ChatPage}/${newChat.id}`) // Перенаправление на страницу нового чата
-    } catch (err) {
-      console.error("Failed to create chat:", err)
-    }
-  }
+  const location = useLocation()
+  const isChatListPage = location.pathname.startsWith(ERoute.ChatListPage)
 
   return (
     <header className={styles.header}>
       <div className={styles.logoContainer}>
         <Link className={styles.logo} to={ERoute.ChatListPage}>
-          HOME
+          {isChatListPage ? "HOME" : <Undo2 size={24} />}
         </Link>
       </div>
       <div className={styles.actions}>
         <button
           className={styles.createButton}
           onClick={() => setIsPopupOpen(true)}
+          disabled={isCreating}
         >
-          Create New Chat
+          <p>Create New Chat</p>
+          <PencilLine />
         </button>
         <button className={styles.logoutButton} onClick={handleLogout}>
-          Logout
+          <p>Logout</p>
+          <LogOut />
         </button>
       </div>
-
       <ChatCreationPopup
         isOpen={isPopupOpen}
         onClose={() => setIsPopupOpen(false)}

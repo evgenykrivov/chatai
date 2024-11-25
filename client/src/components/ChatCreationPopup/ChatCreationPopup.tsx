@@ -38,6 +38,7 @@ const ChatCreationPopup: React.FC<ChatCreationPopupProps> = ({
           value={newChatName}
           onChange={(e) => setNewChatName(e.target.value)}
           className={styles.input}
+          maxLength={18}
         />
         <button onClick={handleCreateChat} className={styles.createButton}>
           Create Chat

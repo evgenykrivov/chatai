@@ -7,35 +7,32 @@ import { LayoutWrapper } from "@/layouts/components/LayoutWrapper/LayoutWrapper"
 
 const MainLayout = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true) // Состояние загрузки
-  const isAuth = useAuth()
+  const { isAuthenticated } = useAuth() // Проверка авторизации
   const navigate = useNavigate()
   const [refresh] = useRefreshMutation()
 
   useEffect(() => {
-    // Проверяем авторизацию
-    if (!isAuth) {
-      const handleRefresh = async () => {
-        try {
-          const res = await refresh().unwrap() // Unwrap корректно обрабатывает RTK Query
+    const handleRefresh = async () => {
+      try {
+        if (!isAuthenticated) {
+          const res = await refresh().unwrap() // Пытаемся обновить токен
           if (res?.access_token) {
-            // Если токен обновлен, остаемся на текущей странице
             console.log("Refresh successful")
           } else {
-            navigate(ERoute.LoginPage) // Если нет токена, отправляем на логин
+            throw new Error("No access token")
           }
-        } catch (err) {
-          console.error("Failed to refresh token", err)
-          navigate(ERoute.LoginPage) // Перенаправляем на логин при ошибке
-        } finally {
-          setIsLoading(false) // Завершаем загрузку
         }
+      } catch (err) {
+        console.error("Failed to refresh token", err)
+      } finally {
+        setIsLoading(false) // Устанавливаем состояние загрузки
       }
-
-      handleRefresh()
-    } else {
-      setIsLoading(false) // Если авторизован, завершаем загрузку
     }
-  }, [isAuth, refresh, navigate])
+
+    handleRefresh() // Выполняем проверку авторизации
+
+    // Зависимости `useEffect`
+  }, [isAuthenticated, refresh, navigate])
 
   // Показ индикатора загрузки до завершения проверки
   if (isLoading) {

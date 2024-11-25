@@ -1,14 +1,29 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { ChatService } from './chat.service';
 
 @Controller('chats')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteChat(@Param('id') id: string, @Req() req: any) {
+    const userId = req.user.userId;
+    return this.chatService.deleteChat(id, userId);
+  }
+
   @Get()
   async getChats(@Req() req: any) {
     const userId = req.user.userId;
-    console.log('RRRRRR', userId);
     return this.chatService.getChats(userId);
   }
 
@@ -22,7 +37,6 @@ export class ChatController {
     @Body() data: { name: string; avatar: string },
     @Req() req: any,
   ) {
-    console.log('Received user:', req.user);
     const userId = req.user.userId;
     return this.chatService.createChat(data, userId);
   }

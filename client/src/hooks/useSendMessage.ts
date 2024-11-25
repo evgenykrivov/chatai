@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
+import { fetchBotReplyAPI } from "@/entities/user/api/apiUtils"
 
 type Message = {
   id: string
