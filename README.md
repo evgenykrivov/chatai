@@ -126,7 +126,7 @@ If Docker is unavailable, follow these steps:
 
 1. Install dependencies:
    ```bash
-   cd backend
+   cd /server
    npm install
    ```
 
@@ -137,20 +137,36 @@ If Docker is unavailable, follow these steps:
 
 3. Start the database:
    ```bash
-   docker-compose up -d database
+   docker compose up -d
    ```
 
 4. Start the frontend client:
    ```bash
    cd client
    npm install
-   npm start
+   
+   $ # start dev server and open browser
+   $ npm run dev
+   
+   $ # build for production
+   $ npm run build
+   
+   $ # locally preview production build
+   $ npm run preview
    ```
 
 5. Start the backend server:
    ```bash
    cd backend
-   npm start
+   
+   # development
+   $ npm run start
+
+   # watch mode
+   $ npm run start:dev
+
+   # production mode
+   $ npm run start:prod
    ```
 
 ---
@@ -176,6 +192,68 @@ If Docker is unavailable, follow these steps:
    ```
    DATABASE_URL=postgresql://username:password@localhost:5432/database_name
    ```
+### .env Configuration for Frontend and Backend
+
+Below is an enhanced version of `.env.example` for both the frontend and backend, including the placeholders for integration with [aimlapi.com](https://aimlapi.com) and proper descriptions of each variable.
+
+---
+
+#### **Frontend (`.env.example`)**
+```env
+# The API token for authentication with the AIML API service
+VITE_API_TOKEN=<Your AIML API token here>
+
+# The base URL of the AIML API service
+VITE_API_URL=https://api.aimlapi.com/chat/completions
+```
+
+- To get your `VITE_API_TOKEN`, log in to [aimlapi.com](https://aimlapi.com), navigate to your account settings or API section, and generate an API key.
+- Use `https://api.aimlapi.com` as the default API URL unless the service specifies otherwise.
+
+---
+
+#### **Backend (`.env.example`)**
+```env
+# PostgreSQL configuration
+POSTGRES_USER=<Your PostgreSQL username>
+POSTGRES_PASSWORD=<Your PostgreSQL password>
+POSTGRES_DB=<Your PostgreSQL database name>
+
+# Database connection string
+DATABASE_URL=postgresql://<POSTGRES_USER>:<POSTGRES_PASSWORD>@localhost:5432/<POSTGRES_DB>
+
+# JWT secrets for authentication
+AT_JWT_SECRET=<Your access token JWT secret>
+RT_JWT_SECRET=<Your refresh token JWT secret>
+
+# Frontend client URL for CORS configuration
+CLIENT_URL_DEFAULT=http://localhost:5173
+
+# Backend server port
+PORT=4000
+```
+
+---
+
+### Notes:
+1. **Database Configuration:**
+   - Replace `<POSTGRES_USER>`, `<POSTGRES_PASSWORD>`, and `<POSTGRES_DB>` with your PostgreSQL credentials.
+   - The `DATABASE_URL` is automatically constructed using the PostgreSQL credentials and default localhost settings.
+
+2. **JWT Secrets:**
+   - Use a strong random string for both `AT_JWT_SECRET` and `RT_JWT_SECRET`. These secrets ensure the security of your authentication tokens.
+
+3. **Frontend Client URL:**
+   - `CLIENT_URL_DEFAULT` is set to `http://localhost:5173` by default for local development. Update it to your frontend's production URL when deploying.
+
+4. **Backend Port:**
+   - Default `PORT` is `4000`. Change it if your environment requires a different port.
+
+---
+
+### Additional Suggestions:
+- Store sensitive values (e.g., tokens, secrets) securely in an environment management system like **Vault**, **AWS Secrets Manager**, or similar tools in production environments.
+- Avoid committing `.env` files directly to your repository. Instead, commit only the `.env.example` file with placeholders.
 
 ---
 
