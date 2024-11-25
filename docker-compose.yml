@@ -44,6 +44,10 @@ services:
       - db
     command: >
       sh -c "
+      until nc -z db 5432; do
+        echo 'Waiting for the database to be ready...';
+        sleep 2;
+      done;
       npx prisma migrate deploy &&
       npm start
       "
