@@ -9,7 +9,12 @@ import * as process from 'process';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: [process.env.CLIENT_URL_DEFAULT, process.env.CLIENT_URL_PUBLIC],
+    origin: [
+      process.env.CLIENT_URL_DEFAULT,
+      process.env.CLIENT_URL_PUBLIC,
+      'http://localhost:80',
+      'http://localhost',
+    ],
     credentials: true,
   });
 
@@ -46,7 +51,7 @@ async function bootstrap() {
     },
   });
 
-  await app.listen(process.env.PORT || 5000);
+  await app.listen(4000);
 }
 
 bootstrap().finally();
